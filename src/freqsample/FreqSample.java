@@ -1,101 +1,61 @@
 package freqsample;
 
-import java.nio.ByteBuffer;
-import javax.sound.sampled.*;
+import java.awt.event.*;
 import javax.swing.*;
+import javax.sound.sampled.*;
 
-/**
- * @author Nicolás A. Ortega
- * @copyright Nicolás A. Ortega
- * @license GPLv3
- * @year 2014
- * 
- */
 public class FreqSample {
-	private static final String version = "v0.1";
+	public static final String version = "v0.2";
 
-	public FreqSample(double hz, double msecs) throws InterruptedException, LineUnavailableException {
-		final int SAMPLE_RATE = 44100;
-		final int SAMPLE_SIZE = 2;
+	private JFrame frame;
+	private JPanel panel;
+	private JTextField hzField, msField;
+	private JLabel hzLabel, msLabel;
+	private JButton playButton;
 
-		SourceDataLine line;
-		double fFreq = hz;
+	public FreqSample() {
+		frame = new JFrame("FreqSample");
+		frame.setSize(400, 160);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		double fCyclePosition = 0;
+		panel = new JPanel();
+		frame.add(panel);
 
-		AudioFormat af = new AudioFormat(SAMPLE_RATE, 16, 1, true, true);
-		DataLine.Info info = new DataLine.Info(SourceDataLine.class, af);
+		panel.setLayout(null);
 
-		if(!AudioSystem.isLineSupported(info)) {
-			System.out.println("Line matching " + info + " is not supported.");
-			throw new LineUnavailableException();
-		}
+		hzLabel = new JLabel("Frequency (Hz):");
+		hzLabel.setBounds(10, 10, 150, 25);
+		panel.add(hzLabel);
+		hzField = new JTextField();
+		hzField.setBounds(170, 10, 220, 25);
+		panel.add(hzField);
 
-		line = (SourceDataLine)AudioSystem.getLine(info);
-		line.open(af);
-		line.start();
+		msLabel = new JLabel("Duration (ms):");
+		msLabel.setBounds(10, 40, 150, 25);
+		panel.add(msLabel);
+		msField = new JTextField();
+		msField.setBounds(170, 40, 220, 25);
+		panel.add(msField);
 
-		ByteBuffer cBuf = ByteBuffer.allocate(line.getBufferSize());
-
-		int ctSamplesTotal = SAMPLE_RATE * (int)(msecs / 1000);
-
-		while(ctSamplesTotal > 0) {
-			double fCycleInc = fFreq/SAMPLE_RATE;
-
-			cBuf.clear();
-
-			int ctSamplesThisPass = line.available() / SAMPLE_SIZE;
-			for(int i = 0; i < ctSamplesThisPass; i++) {
-				cBuf.putShort((short)(Short.MAX_VALUE * Math.sin(2 * Math.PI * fCyclePosition)));
-				fCyclePosition += fCycleInc;
-				if(fCyclePosition > 1) fCyclePosition -= 1;
+		playButton = new JButton("Play");
+		playButton.setBounds(160, 80, 80, 25);
+		playButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				double hz = Double.parseDouble(hzField.getText());
+				double ms = Double.parseDouble(msField.getText());
+				try {
+					Generator.generateTone(hz, ms);
+				} catch(InterruptedException ie) {
+					ie.printStackTrace();
+				} catch(LineUnavailableException lue) {
+					lue.printStackTrace();
+				}
 			}
-			line.write(cBuf.array(), 0, cBuf.position());
-			ctSamplesTotal -= ctSamplesThisPass;
+		});
+		panel.add(playButton);
 
-			while(line.getBufferSize() / 2 < line.available()) {
-				Thread.sleep(1);
-			}
-		}
-
-		line.drain();
-		line.close();
+		frame.setVisible(true);
 	}
 
-	public static void main(String[] args) throws InterruptedException, LineUnavailableException {
-		if(args.length <= 2 && args.length != 0) {
-			if(args.length == 1) {
-				if(args[0].equals("-h")) printHelp();
-				else if(args[0].equals("-c")) printCopyright();
-				else if(args[0].equals("-v")) System.out.println(version);
-				else printHelp();
-			} else {
-				double hz = Double.parseDouble(args[0]);
-				double ms = Double.parseDouble(args[1]);
-				new FreqSample(hz, ms);
-			}
-		} else {
-			printHelp();
-		}
-	}
-
-	private static void printHelp() {
-		System.out.println("Usage: java -jar FreqSample.jar [option][<hz> <ms>]");
-		System.out.println(" -h -- Print this help information");
-		System.out.println(" -c -- Print copyright information");
-		System.out.println(" -v -- Print version\n");
-	}
-
-	private static void printCopyright() {
-		System.out.println("FreqSample, a simple frequency sampler.\n" +
-			"Copyright (C) 2014 Nicolás A. Ortega\n" +
-			"This program is free software: you can redistribute it and/or modify\n" +
-			"it under the terms of the GNU General Public License as published by\n" +
-			"the Free Software Foundation, either version 3 of the License, or\n" +
-			"(at your option) any later version.\n\n" +
-			"This program is distributed in the hope that it will be useful,\n" +
-			"but WITHOUT ANY WARRANTY; without even the implied warranty of\n" +
-			"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\n" +
-			"GNU General Public License for more details.");
-	}
+	public static void main(String[] args) { new FreqSample(); }
 }
