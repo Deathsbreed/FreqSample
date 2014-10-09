@@ -23,5 +23,5 @@
 		</jar>
 	</target>
 
-	<target name="main" depends="jar" ></target>
+	<target name="main" depends="jar" />
 </project>
