@@ -35,8 +35,8 @@ public class Generator {
 
 		ByteBuffer cBuf = ByteBuffer.allocate(line.getBufferSize());
 
+		if(msecs < 150) msecs = 150;
 		int ctSamplesTotal = (int)(SAMPLE_RATE * (msecs / 1000));
-		if(ctSamplesTotal < 150) ctSamplesTotal = 150;
 
 		while(ctSamplesTotal > 0) {
 			double fCycleInc = fFreq/SAMPLE_RATE;
