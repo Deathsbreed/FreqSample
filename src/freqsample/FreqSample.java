@@ -4,9 +4,14 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.sound.sampled.*;
 
+/**
+ * @author Nicolás A. Ortega
+ * @copyright Nicolás A. Ortega
+ * @license GNU GPLv3
+ * @year 2014
+ * 
+ */
 public class FreqSample {
-	public static final String version = "v0.2";
-
 	private JFrame frame;
 	private JPanel panel;
 	private JTextField hzField, msField;

@@ -7,7 +7,7 @@ import javax.swing.*;
 /**
  * @author Nicolás A. Ortega
  * @copyright Nicolás A. Ortega
- * @license GPLv3
+ * @license GNU GPLv3
  * @year 2014
  * 
  */
@@ -35,7 +35,8 @@ public class Generator {
 
 		ByteBuffer cBuf = ByteBuffer.allocate(line.getBufferSize());
 
-		int ctSamplesTotal = (int)(SAMPLE_RATE * msecs / 1000);
+		int ctSamplesTotal = (int)(SAMPLE_RATE * (msecs / 1000));
+		if(ctSamplesTotal < 150) ctSamplesTotal = 150;
 
 		while(ctSamplesTotal > 0) {
 			double fCycleInc = fFreq/SAMPLE_RATE;
