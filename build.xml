@@ -22,4 +22,6 @@
 			</manifest>
 		</jar>
 	</target>
+
+	<target name="main" depends="jar" ></target>
 </project>
