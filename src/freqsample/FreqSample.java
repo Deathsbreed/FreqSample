@@ -80,6 +80,7 @@ public class FreqSample {
 				new Window("About",
 					"FreqSample " + version + "\n" +
 					"Copyright (C) 2014 Nicolás A. Ortega\n" +
+					"License: GNU GPLv3\n" +
 					"Contact: nicolas.ortega.froysa@gmail.com\n" +
 					"Source-Code: https://github.com/Deathsbreed/FreqSample\n" +
 					"Developers: Nicolás Ortega\n\n");
