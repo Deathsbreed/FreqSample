@@ -21,6 +21,7 @@ public class Generator {
 
 		double fCyclePosition = 0;
 
+		// Open Audio Device
 		AudioFormat af = new AudioFormat(SAMPLE_RATE, 16, 1, true, true);
 		DataLine.Info info = new DataLine.Info(SourceDataLine.class, af);
 
@@ -33,16 +34,21 @@ public class Generator {
 		line.open(af);
 		line.start();
 
+		// The audio bytebuffer
 		ByteBuffer cBuf = ByteBuffer.allocate(line.getBufferSize());
 
+		// Set the total samples to loop through
 		if(msecs < 150) msecs = 150;
 		int ctSamplesTotal = (int)(SAMPLE_RATE * (msecs / 1000));
 
 		while(ctSamplesTotal > 0) {
+			// Define the frequency at the given sample rate
 			double fCycleInc = fFreq/SAMPLE_RATE;
 
+			// Clear the buffer
 			cBuf.clear();
 
+			// Play the frequency
 			int ctSamplesThisPass = line.available() / SAMPLE_SIZE;
 			for(int i = 0; i < ctSamplesThisPass; i++) {
 				cBuf.putShort((short)(Short.MAX_VALUE * Math.sin(2 * Math.PI * fCyclePosition)));
@@ -57,6 +63,7 @@ public class Generator {
 			}
 		}
 
+		// Close the audioline
 		line.drain();
 		line.close();
 	}
