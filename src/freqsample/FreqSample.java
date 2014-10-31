@@ -12,7 +12,7 @@ import javax.sound.sampled.*;
  * 
  */
 public class FreqSample {
-	private static final String version = "v1.0.2";
+	private static final String version = "v1.1.1";
 	private JFrame frame;
 	private JPanel panel;
 	private JTextField hzField, msField;
